@@ -156,8 +156,7 @@
         .then(res => res.json())
         .then(data => {
           document.getElementById('version').innerHTML =
-            `${data.message} @ ${data.deployedAt}`;
-          document.getElementById('badge').innerText = 'v' + data.version;
+            `${data.message} @ ${data.deployedAt} (v${data.version})`;
         })
         .catch(() => {
           document.getElementById('version').innerText = 'connection failed';
@@ -167,5 +166,6 @@
     refresh();
     checkVersion();
 </script>
+
 </body>
 </html>
