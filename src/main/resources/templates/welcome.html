@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <style>
+        :root {
+          --bg: #1e1e2f;
+          --card: #2a2a3d;
+          --text: #f5f5f5;
+          --accent: #4caf50;
+        }
+        body.light {
+          --bg: #f0f2f5;
+          --card: #ffffff;
+          --text: #1e1e2f;
+          --accent: #2e7d32;
+        }
+        body {
+          margin: 0;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--bg);
+          font-family: 'Segoe UI', sans-serif;
+          color: var(--text);
+          transition: background 0.3s, color 0.3s;
+        }
+        .card {
+          background: var(--card);
+          padding: 40px 60px;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+          text-align: center;
+          transition: background 0.3s;
+        }
+        h1 { color: var(--accent); margin-bottom: 8px; }
+        p { color: inherit; opacity: 0.8; }
+        .toggle-btn {
+          margin-top: 20px;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 8px;
+          background: var(--accent);
+          color: white;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        .toggle-btn:hover { opacity: 0.9; }
+        #status {
+          margin-top: 16px;
+          font-size: 13px;
+          opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>🚀 Welcome to Spring Boot App</h1>
+    <p>Your CI/CD pipeline is live and working.</p>
+    <button class="toggle-btn" onclick="toggleTheme()">Toggle Light / Dark</button>
+    <div id="status">Checking server status...</div>
+</div>
+
+<script>
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+    }
+
+    // Calls the backend on load to prove it's not just static HTML
+    fetch('/api/welcome/status')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('status').innerText =
+          `${data.app} • ${data.status} • ${data.timestamp}`;
+      })
+      .catch(() => {
+        document.getElementById('status').innerText = 'Could not reach backend.';
+      });
+</script>
+</body>
+</html>
