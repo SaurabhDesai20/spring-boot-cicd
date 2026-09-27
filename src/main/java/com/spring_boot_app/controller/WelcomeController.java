@@ -31,4 +31,14 @@ public class WelcomeController {
         response.put("timestamp", LocalDateTime.now().toString());
         return response;
     }
+
+    @GetMapping("/version")
+    @ResponseBody
+    public Map<String, Object> version() {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("version", "1.1.0");
+        response.put("message", "CI/CD pipeline test - this endpoint is new!");
+        response.put("deployedAt", LocalDateTime.now().toString());
+        return response;
+    }
 }
