@@ -2,65 +2,136 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome</title>
+    <title>Spring Boot App</title>
     <style>
         :root {
-          --bg: #1e1e2f;
-          --card: #2a2a3d;
-          --text: #f5f5f5;
-          --accent: #4caf50;
+          --bg: #0d1117;
+          --panel: #161b22;
+          --border: #30363d;
+          --text: #c9d1d9;
+          --accent: #58a6ff;
+          --green: #3fb950;
         }
         body.light {
-          --bg: #f0f2f5;
-          --card: #ffffff;
-          --text: #1e1e2f;
-          --accent: #2e7d32;
+          --bg: #f6f8fa;
+          --panel: #ffffff;
+          --border: #d0d7de;
+          --text: #24292f;
+          --accent: #0969da;
+          --green: #1a7f37;
         }
+        * { box-sizing: border-box; }
         body {
           margin: 0;
-          height: 100vh;
+          min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
           background: var(--bg);
-          font-family: 'Segoe UI', sans-serif;
+          font-family: 'Consolas', 'Courier New', monospace;
           color: var(--text);
           transition: background 0.3s, color 0.3s;
+          padding: 20px;
         }
-        .card {
-          background: var(--card);
-          padding: 40px 60px;
-          border-radius: 12px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-          text-align: center;
-          transition: background 0.3s;
+        .terminal {
+          width: 100%;
+          max-width: 560px;
+          background: var(--panel);
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 12px 32px rgba(0,0,0,0.35);
         }
-        h1 { color: var(--accent); margin-bottom: 8px; }
-        p { color: inherit; opacity: 0.8; }
-        .toggle-btn {
-          margin-top: 20px;
-          padding: 10px 20px;
+        .title-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 14px;
+          background: var(--border);
+        }
+        .dots { display: flex; gap: 6px; }
+        .dot { width: 11px; height: 11px; border-radius: 50%; }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        .title-text { font-size: 12px; opacity: 0.6; }
+        .theme-btn {
           border: none;
-          border-radius: 8px;
-          background: var(--accent);
-          color: white;
+          background: transparent;
+          color: var(--text);
           cursor: pointer;
-          font-size: 14px;
-        }
-        .toggle-btn:hover { opacity: 0.9; }
-        #status {
-          margin-top: 16px;
           font-size: 13px;
           opacity: 0.7;
         }
+        .theme-btn:hover { opacity: 1; }
+        .body-content { padding: 22px 24px; font-size: 14px; line-height: 1.8; }
+        .prompt { color: var(--green); }
+        .path { color: var(--accent); }
+        .line { white-space: pre-wrap; word-break: break-word; }
+        .out { opacity: 0.85; margin-left: 4px; }
+        .badge {
+          display: inline-block;
+          background: var(--green);
+          color: #04220c;
+          font-weight: bold;
+          font-size: 11px;
+          padding: 2px 8px;
+          border-radius: 4px;
+          margin-left: 6px;
+        }
+        .cta {
+          margin-top: 16px;
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .cta button {
+          background: var(--accent);
+          border: none;
+          color: #04121f;
+          font-family: inherit;
+          font-size: 13px;
+          padding: 8px 14px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+        }
+        .cta button:hover { opacity: 0.9; }
+        .cursor {
+          display: inline-block;
+          width: 8px;
+          height: 14px;
+          background: var(--text);
+          margin-left: 4px;
+          animation: blink 1s step-end infinite;
+          vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
-<div class="card">
-    <h1>🚀 Welcome to Spring Boot App</h1>
-    <p>Your CI/CD pipeline is live and working.</p>
-    <button class="toggle-btn" onclick="toggleTheme()">Toggle Light / Dark</button>
-    <div id="status">Checking server status...</div>
+<div class="terminal">
+    <div class="title-bar">
+        <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+        </div>
+        <span class="title-text">spring-boot-app — deployed via CI/CD</span>
+        <button class="theme-btn" onclick="toggleTheme()">◐ theme</button>
+    </div>
+    <div class="body-content">
+        <div class="line"><span class="prompt">ubuntu@ec2</span>:<span class="path">~</span>$ curl /api/welcome/status</div>
+        <div class="line out" id="status">loading...</div>
+        <div class="line" style="margin-top:10px;"><span class="prompt">ubuntu@ec2</span>:<span class="path">~</span>$ curl /api/welcome/version</div>
+        <div class="line out" id="version">loading... <span class="badge" id="badge">v?</span></div>
+
+        <div class="cta">
+            <button onclick="refresh()">↻ refresh</button>
+            <button onclick="checkVersion()">check version</button>
+        </div>
+        <div class="line" style="margin-top:14px;"><span class="prompt">ubuntu@ec2</span>:<span class="path">~</span>$<span class="cursor"></span></div>
+    </div>
 </div>
 
 <script>
@@ -68,16 +139,33 @@
       document.body.classList.toggle('light');
     }
 
-    // Calls the backend on load to prove it's not just static HTML
-    fetch('/api/welcome/status')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('status').innerText =
-          `${data.app} • ${data.status} • ${data.timestamp}`;
-      })
-      .catch(() => {
-        document.getElementById('status').innerText = 'Could not reach backend.';
-      });
+    function refresh() {
+      fetch('/api/welcome/status')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('status').innerText =
+            `${data.app} is ${data.status} @ ${data.timestamp}`;
+        })
+        .catch(() => {
+          document.getElementById('status').innerText = 'connection failed';
+        });
+    }
+
+    function checkVersion() {
+      fetch('/api/welcome/version')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('version').innerHTML =
+            `${data.message} @ ${data.deployedAt}`;
+          document.getElementById('badge').innerText = 'v' + data.version;
+        })
+        .catch(() => {
+          document.getElementById('version').innerText = 'connection failed';
+        });
+    }
+
+    refresh();
+    checkVersion();
 </script>
 </body>
 </html>
